@@ -16,6 +16,7 @@ const CorporateATSTemplate = ({ data, accentColor }) => {
             src={data.personal_info.image}
             alt="profile"
             className="w-20 h-20 rounded-full object-cover"
+            style={{backgroundColor: accentColor}}
           />
         )}
         <div>
@@ -25,7 +26,7 @@ const CorporateATSTemplate = ({ data, accentColor }) => {
           <p className="text-sm text-gray-600">
             {data.personal_info?.profession || ""}
           </p>
-          <div className="flex flex-wrap justify-center gap-1 text-sm text-gray-600">
+          <div className="flex flex-wrap gap-1 text-sm text-gray-600">
             {data.personal_info?.email && (
               <a target="_blank" href={`mailto:${data.personal_info?.email}`}>
                 <span>• {data.personal_info.email}</span>

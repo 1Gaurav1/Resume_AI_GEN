@@ -39,7 +39,7 @@ const TemplateSelector = ({ selectedTemplate, onChange }) => {
     },
     {
       id: "corporateATSTemplate",
-      name: "Creative Visual",
+      name: "Corporate ATS Template",
       preview: "An Applicant Tracking System optimized layout focusing on clarity and keyword visibility.",
     },
   ];

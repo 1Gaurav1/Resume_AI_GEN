@@ -141,11 +141,11 @@ const CreativeVisualTemplate = ({ data, accentColor }) => {
           <h2 className="text-lg font-semibold" style={{ color: accentColor }}>
             Featured Projects
           </h2>
-          <div className="mt-1 flex flex-wrap gap-1">
+          <div className="mt-1">
             {data.project.map((p, i) => (
               <div
                 key={i}
-                className="p-2 rounded-md border-l-4 w-[49.5%]"
+                className="p-2 rounded-md border-l-4"
                 style={{ borderColor: accentColor }}
               >
                 <div className="font-semibold">{p.name}</div>
