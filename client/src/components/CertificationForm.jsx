@@ -52,7 +52,7 @@ const CertificationForm = ({ data, onChange }) => {
         </div>
       ) : (
         <div className="space-y-4">
-          {data.map((Certification, index) => (
+          {data.map((certification, index) => (
             <div
               key={index}
               className="p-4 border border-gray-200 rounded-lg space-y-3"
@@ -69,7 +69,7 @@ const CertificationForm = ({ data, onChange }) => {
 
               <div className="grid md:grid-cols-2 gap-3">
                 <input
-                  value={Certification.certificate_name || ""}
+                  value={certification.certificate_name || ""}
                   onChange={(e) =>
                     updateCertification(
                       index,
@@ -82,7 +82,7 @@ const CertificationForm = ({ data, onChange }) => {
                   className=" px-3 py-2 text-sm"
                 />
                 <input
-                  value={Certification.issuer || ""}
+                  value={certification.issuer || ""}
                   onChange={(e) =>
                     updateCertification(index, "issuer", e.target.value)
                   }
@@ -91,7 +91,7 @@ const CertificationForm = ({ data, onChange }) => {
                   className=" px-3 py-2 text-sm"
                 />
                 <input
-                  value={Certification.credential_url || ""}
+                  value={certification.credential_url || ""}
                   onChange={(e) =>
                     updateCertification(index, "credential_url", e.target.value)
                   }
@@ -100,7 +100,7 @@ const CertificationForm = ({ data, onChange }) => {
                   className=" px-3 py-2 text-sm"
                 />
                 <input
-                  value={Certification.issue_date || ""}
+                  value={certification.issue_date || ""}
                   onChange={(e) =>
                     updateCertification(index, "issue_date", e.target.value)
                   }
@@ -110,7 +110,7 @@ const CertificationForm = ({ data, onChange }) => {
               </div>
 
               <input
-                value={Certification.description || ""}
+                value={certification.description || ""}
                 onChange={(e) =>
                   updateCertification(index, "description", e.target.value)
                 }
