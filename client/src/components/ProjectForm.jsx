@@ -56,7 +56,7 @@ const ProjectForm = ({ data, onChange }) => {
               </button>
             </div>
 
-            <div className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
               <input
                 value={project.name || ""}
                 onChange={(e) => updateProject(index, "name", e.target.value)}
@@ -71,6 +71,14 @@ const ProjectForm = ({ data, onChange }) => {
                 placeholder="Project Type"
                 className=" px-3 py-2 text-sm rounded-lg"
               />
+            </div>
+            <input
+              value={project.link || ""}
+              onChange={(e) => updateProject(index, "link", e.target.value)}
+              type="text"
+              placeholder="Project Link"
+              className=" px-3 py-2 text-sm rounded-lg w-full"
+            />
               <textarea
                 value={project.description || ""}
                 onChange={(e) =>
@@ -81,7 +89,6 @@ const ProjectForm = ({ data, onChange }) => {
                 placeholder="Describe your project..."
                 className=" px-3 py-2 text-sm rounded-lg resize-none w-full"
               />
-            </div>
           </div>
         ))}
       </div>

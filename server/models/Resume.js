@@ -35,6 +35,7 @@ const ResumeSchema = new mongoose.Schema(
         name: { type: String },
         type: { type: String },
         description: { type: String },
+        link: { type: String },
       },
     ],
     education: [
@@ -44,6 +45,15 @@ const ResumeSchema = new mongoose.Schema(
         field: { type: String },
         graduation_date: { type: String },
         gpa: { type: String },
+      },
+    ],
+    certification: [
+      {
+        certificate_name: { type: String },
+        description: { type: String },
+        issuer: { type: String },
+        issue_date: { type: Date },
+        credential_url: { type: String },
       },
     ],
   },

@@ -1,3 +1,5 @@
+import { Award, ExternalLink } from "lucide-react";
+
 const CreativeVisualTemplate = ({ data, accentColor }) => {
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
@@ -78,7 +80,7 @@ const CreativeVisualTemplate = ({ data, accentColor }) => {
         )}
       </div>
 
-      <section className="mb-2">
+      <section className="mb-1">
         {data.professional_summary && (
           <div>
             <h2
@@ -90,13 +92,13 @@ const CreativeVisualTemplate = ({ data, accentColor }) => {
             >
               Summary
             </h2>
-            <p className="text-gray-700">{data.professional_summary}</p>
+            <p className="text-gray-700 text-sm">{data.professional_summary}</p>
           </div>
         )}
       </section>
 
       {data.experience && data.experience.length > 0 && (
-        <section className="mb-2">
+        <section className="mb-1">
           <h2 className="text-lg font-semibold" style={{ color: accentColor }}>
             Experience Timeline
           </h2>
@@ -127,7 +129,7 @@ const CreativeVisualTemplate = ({ data, accentColor }) => {
                     </div>
                   </div>
                   {exp.description && (
-                    <p className="text-gray-700">{exp.description}</p>
+                    <p className="text-gray-700 text-sm">{exp.description}</p>
                   )}
                 </div>
               </div>
@@ -141,14 +143,28 @@ const CreativeVisualTemplate = ({ data, accentColor }) => {
           <h2 className="text-lg font-semibold" style={{ color: accentColor }}>
             Featured Projects
           </h2>
-          <div className="mt-1">
+          <div>
             {data.project.map((p, i) => (
               <div
                 key={i}
-                className="p-2 rounded-md border-l-4"
+                className="p-2 pt-1 rounded-md border-l-4"
                 style={{ borderColor: accentColor }}
               >
-                <div className="font-semibold">{p.name}</div>
+                <div className="font-semibold">
+                  {p.name}
+                  {p.link && (
+                    <span className="text-gray-600 font-normal cursor-pointer">
+                      <a
+                        href={p.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center"
+                      >
+                        <ExternalLink size={12} className="ml-1 opacity-75" />
+                      </a>
+                    </span>
+                  )}
+                </div>
                 <div className="text-sm text-gray-600">{p.description}</div>
               </div>
             ))}
@@ -157,7 +173,7 @@ const CreativeVisualTemplate = ({ data, accentColor }) => {
       )}
 
       {data.education && data.education.length > 0 && (
-        <section className="mb-2">
+        <section className="mb-1">
           <h2 className="text-lg font-semibold" style={{ color: accentColor }}>
             Education
           </h2>
@@ -181,16 +197,74 @@ const CreativeVisualTemplate = ({ data, accentColor }) => {
       )}
 
       {data.skills && data.skills.length > 0 && (
-        <section>
+        <section className="mb-1">
           <h2 className="text-lg font-semibold" style={{ color: accentColor }}>
             Skills & Tools
           </h2>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1">
             {data.skills.map((s, idx) => (
               <span key={idx} className="text-sm px-2 py-0.5 border rounded">
                 {s}
               </span>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* Certification */}
+      {data.certification && data.certification.length > 0 && (
+        <section>
+          <h2 className="text-lg font-semibold" style={{ color: accentColor }}>
+            Certifications
+          </h2>
+
+          <div className="space-y-1">
+            {data.certification.map((cert, index) => {
+              return (
+                <div key={index} className="flex space-x-2">
+                  <Award
+                    size={16}
+                    className="mt-1 shrink-0"
+                    style={{ color: accentColor }}
+                  />
+
+                  <div className="grow">
+                    <h3 className="text-sm text-gray-600 leading-tight flex items-center justify-between">
+                      {cert.credential_url ? (
+                        <div className="flex items-center font-medium">
+                          {cert.certificate_name}
+
+                          <p className="text-sm text-gray-900 italic ml-1">
+                            {cert.issuer}
+                          </p>
+                          <a
+                            href={cert.credential_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink
+                              size={12}
+                              className="ml-1 opacity-75 shrink-0"
+                            />
+                          </a>
+                        </div>
+                      ) : (
+                        <>{cert.certificate_name}</>
+                      )}
+                      <p className="text-gray-500">
+                        {formatDate(cert.issue_date)}
+                      </p>
+                    </h3>
+
+                    {cert.description && (
+                      <p className="text-sm text-gray-500 italic">
+                        {cert.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}

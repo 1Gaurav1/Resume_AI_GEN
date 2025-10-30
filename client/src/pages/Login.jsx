@@ -55,7 +55,7 @@ const Login = () => {
               type="text"
               name="name"
               placeholder="Name"
-              className="border-none outline-none ring-0"
+              className="border-none outline-none ring-0 w-full"
               value={formData.name}
               onChange={handleChange}
               required
@@ -68,7 +68,7 @@ const Login = () => {
             type="email"
             name="email"
             placeholder="Email id"
-            className="border-none outline-none ring-0"
+            className="border-none outline-none ring-0 w-full"
             value={formData.email}
             onChange={handleChange}
             required
@@ -80,7 +80,7 @@ const Login = () => {
             type="password"
             name="password"
             placeholder="Password"
-            className="border-none outline-none ring-0"
+            className="border-none outline-none ring-0 w-full"
             value={formData.password}
             onChange={handleChange}
             required

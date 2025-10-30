@@ -1,4 +1,4 @@
-const MinialistTemplate = ({ data, accentColor }) => {
+const MinimalistTemplate = ({ data, accentColor }) => {
   const formatDate = (dateStr) => {
     if (!dateStr) return "";
     const [year, month] = dateStr.split("-");
@@ -78,24 +78,24 @@ const MinialistTemplate = ({ data, accentColor }) => {
         </div>
       </header>
 
-      <section className="mb-2">
+      <section className="mb-1">
         {data.professional_summary && (
           <>
             <h2
-              className="text-sm font-semibold uppercase"
+              className="font-semibold uppercase"
               style={{ color: accentColor }}
             >
               Professional Summary
             </h2>
-            <p className="text-gray-700">{data.professional_summary}</p>
+            <p className="text-gray-700 text-sm">{data.professional_summary}</p>
           </>
         )}
       </section>
 
       {data.experience && data.experience.length > 0 && (
-        <section className="mb-2">
+        <section className="mb-1">
           <h2
-            className="text-sm font-semibold uppercase"
+            className="font-semibold uppercase"
             style={{ color: accentColor }}
           >
             Professional Experience
@@ -108,14 +108,14 @@ const MinialistTemplate = ({ data, accentColor }) => {
                     <h3 className="font-medium">{exp.position}</h3>
                     <p className="text-gray-600 text-sm">{exp.company}</p>
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-gray-500 text-sm">
                     <p>
                       {formatDate(exp.start_date)} -{" "}
                       {exp.is_current ? "Present" : formatDate(exp.end_date)}
                     </p>
                   </div>
                 </div>
-                <p className="text-gray-700">{exp.description}</p>
+                <p className="text-gray-700 text-sm">{exp.description}</p>
               </div>
             ))}
           </div>
@@ -123,7 +123,7 @@ const MinialistTemplate = ({ data, accentColor }) => {
       )}
 
       {data.project && data.project.length > 0 && (
-        <section className="mb-2">
+        <section className="mb-1">
           <h2
             className="text-sm font-semibold uppercase"
             style={{ color: accentColor }}
@@ -133,7 +133,21 @@ const MinialistTemplate = ({ data, accentColor }) => {
           <ul className="space-y-1">
             {data.project.map((p, i) => (
               <li key={i}>
-                <div className="font-medium">{p.name}</div>
+                <div className="font-medium flex items-center gap-1">
+                  {p.name}
+                  {p.link && (
+                    <span className="text-gray-600 font-normal cursor-pointer">
+                      <a
+                        href={p.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center"
+                      >
+                        Link
+                      </a>
+                    </span>
+                  )}
+                </div>
                 <div className="text-sm text-gray-600">{p.description}</div>
               </li>
             ))}
@@ -142,7 +156,7 @@ const MinialistTemplate = ({ data, accentColor }) => {
       )}
 
       {data.education && data.education.length > 0 && (
-        <section className="mb-2">
+        <section className="mb-1">
           <h2
             className="text-sm font-semibold uppercase"
             style={{ color: accentColor }}
@@ -169,14 +183,14 @@ const MinialistTemplate = ({ data, accentColor }) => {
       )}
 
       {data.skills && data.skills.length > 0 && (
-        <section>
+        <section className="mb-1">
           <h2
             className="text-sm font-semibold uppercase"
             style={{ color: accentColor }}
           >
             Core Skills
           </h2>
-          <div className="flex flex-wrap gap-1.5 text-sm text-gray-700">
+          <div className="flex flex-wrap gap-1 text-sm text-gray-700">
             {data.skills.map((s, idx) => (
               <div key={idx} className="px-2 py-0.5 border rounded">
                 {s}
@@ -185,8 +199,62 @@ const MinialistTemplate = ({ data, accentColor }) => {
           </div>
         </section>
       )}
+
+      {/* Certification */}
+      {data.certification && data.certification.length > 0 && (
+        <section>
+          <h2
+            className="text-sm font-semibold uppercase"
+            style={{ color: accentColor }}
+          >
+            Certifications
+          </h2>
+
+          <div className="space-y-1">
+            {data.certification.map((cert, index) => {
+              return (
+                <div key={index} className="flex space-x-2">
+                  <div className="grow">
+                    <div className="flex justify-between items-start">
+                      <h3 className="leading-tight">
+                        {cert.credential_url ? (
+                          <div className="flex items-center text-gray-900 font-medium">
+                            {cert.certificate_name}
+
+                            <p className="text-sm italic mx-1">
+                              {cert.issuer}
+                            </p>
+                            <a
+                              href={cert.credential_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Link
+                            </a>
+                          </div>
+                        ) : (
+                          cert.certificate_name
+                        )}
+                      </h3>
+                      <p className="text-gray-600 shrink-0 text-sm">
+                        {formatDate(cert.issue_date)}
+                      </p>
+                    </div>
+
+                    {cert.description && (
+                      <p className="text-gray-500 leading-relaxed text-sm">
+                        {cert.description}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
 
-export default MinialistTemplate;
+export default MinimalistTemplate;

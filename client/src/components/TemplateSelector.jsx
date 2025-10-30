@@ -1,5 +1,5 @@
 import { Check, Layout } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 
 const TemplateSelector = ({ selectedTemplate, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -28,19 +28,28 @@ const TemplateSelector = ({ selectedTemplate, onChange }) => {
       preview: "Ultra-clean design that puts your content front and center",
     },
     {
-      id: "minimalist",
-      name: "Minimalist",
-      preview: "A clean, bold design with structured sections and modern typography.",
-    },
-    {
       id: "creativeVisual",
       name: "Creative Visual",
-      preview: "A visually engaging layout with timelines and accent colors for a modern, dynamic presentation.",
+      preview:
+        "A visually engaging layout with timelines and accent colors for a modern, dynamic presentation.",
+    },
+    {
+      id: "minimalist",
+      name: "Minimalist",
+      preview:
+        "A clean, bold design with structured sections and modern typography.",
+    },
+    {
+      id: "modernProTemplate",
+      name: "Modern Pro Template",
+      preview:
+        "A clean, executive-style resume template designed for senior professionals with strong ATS compatibility.",
     },
     {
       id: "corporateATSTemplate",
       name: "Corporate ATS Template",
-      preview: "An Applicant Tracking System optimized layout focusing on clarity and keyword visibility.",
+      preview:
+        "An Applicant Tracking System optimized layout focusing on clarity and keyword visibility.",
     },
   ];
 

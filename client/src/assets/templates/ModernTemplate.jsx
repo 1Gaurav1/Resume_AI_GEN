@@ -1,4 +1,12 @@
-import { Mail, Phone, MapPin, Linkedin, Globe, Github } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Linkedin,
+  Globe,
+  Github,
+  ExternalLink,
+} from "lucide-react";
 
 const ModernTemplate = ({ data, accentColor }) => {
   const formatDate = (dateStr) => {
@@ -14,7 +22,7 @@ const ModernTemplate = ({ data, accentColor }) => {
     <div className="max-w-4xl mx-auto bg-white text-gray-800">
       {/* Header */}
       <header
-        className="px-7 py-4 text-white"
+        className="px-7 py-3 text-white"
         style={{ backgroundColor: accentColor }}
       >
         <h1 className="text-4xl font-light mb-1">
@@ -25,7 +33,7 @@ const ModernTemplate = ({ data, accentColor }) => {
           {data?.personal_info?.profession || ""}
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-sm">
           {data.personal_info?.email && (
             <div className="flex items-center gap-2">
               <a
@@ -110,18 +118,18 @@ const ModernTemplate = ({ data, accentColor }) => {
       <div className="px-7 py-4">
         {/* Professional Summary */}
         {data.professional_summary && (
-          <section className="mb-2">
-            <h2 className="text-2xl font-light border-b border-gray-200">
+          <section className="mb-1">
+            <h2 className="text-xl font-light border-b border-gray-200">
               Professional Summary
             </h2>
-            <p className="text-gray-700">{data.professional_summary}</p>
+            <p className="text-gray-700 text-sm">{data.professional_summary}</p>
           </section>
         )}
 
         {/* Experience */}
         {data.experience && data.experience.length > 0 && (
-          <section className="mb-2">
-            <h2 className="text-2xl font-light border-b border-gray-200">
+          <section className="mb-1">
+            <h2 className="text-xl font-light border-b border-gray-200">
               Experience
             </h2>
 
@@ -133,20 +141,23 @@ const ModernTemplate = ({ data, accentColor }) => {
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-xl font-medium text-gray-900">
+                      <h3 className="font-medium text-gray-900">
                         {exp.position}
                       </h3>
-                      <p className="font-medium" style={{ color: accentColor }}>
+                      <p
+                        className="font-medium text-sm"
+                        style={{ color: accentColor }}
+                      >
                         {exp.company}
                       </p>
                     </div>
-                    <div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded">
+                    <div className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded">
                       {formatDate(exp.start_date)} -{" "}
                       {exp.is_current ? "Present" : formatDate(exp.end_date)}
                     </div>
                   </div>
                   {exp.description && (
-                    <div className="text-gray-700 leading-relaxed mt-2 whitespace-pre-line">
+                    <div className="text-gray-700 leading-relaxed text-sm whitespace-pre-line">
                       {exp.description}
                     </div>
                   )}
@@ -158,8 +169,8 @@ const ModernTemplate = ({ data, accentColor }) => {
 
         {/* Projects */}
         {data.project && data.project.length > 0 && (
-          <section className="mb-2">
-            <h2 className="text-2xl font-light border-b border-gray-200">
+          <section className="mb-1">
+            <h2 className="text-xl font-light border-b border-gray-200">
               Projects
             </h2>
 
@@ -172,8 +183,20 @@ const ModernTemplate = ({ data, accentColor }) => {
                 >
                   <div className="flex justify-between items-start">
                     <div>
-                      <h3 className="text-lg font-medium text-gray-900">
+                      <h3 className="font-medium text-gray-900 flex items-center gap-0.5">
                         {p.name}
+                        {p.link && (
+                          <span className="text-gray-600 font-normal cursor-pointer">
+                            <a
+                              href={p.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center"
+                            >
+                              Link
+                            </a>
+                          </span>
+                        )}
                       </h3>
                     </div>
                   </div>
@@ -192,17 +215,19 @@ const ModernTemplate = ({ data, accentColor }) => {
           {/* Education */}
           {data.education && data.education.length > 0 && (
             <section>
-              <h2 className="text-2xl font-light border-b border-gray-200">
+              <h2 className="text-xl font-light border-b border-gray-200">
                 Education
               </h2>
 
               <div className="space-y-1">
                 {data.education.map((edu, index) => (
                   <div key={index}>
-                    <h3 className="font-semibold text-gray-900">
+                    <h3 className="text-gray-900 ">
                       {edu.degree} {edu.field && `in ${edu.field}`}
                     </h3>
-                    <p style={{ color: accentColor }}>{edu.institution}</p>
+                    <p style={{ color: accentColor }} className="text-sm">
+                      {edu.institution}
+                    </p>
                     <div className="flex justify-between items-center text-sm text-gray-600">
                       <span>{formatDate(edu.graduation_date)}</span>
                       {edu.gpa && <span>GPA: {edu.gpa}</span>}
@@ -216,11 +241,11 @@ const ModernTemplate = ({ data, accentColor }) => {
           {/* Skills */}
           {data.skills && data.skills.length > 0 && (
             <section>
-              <h2 className="text-2xl font-light mb-2 border-b border-gray-200">
+              <h2 className="text-xl font-light border-b border-gray-200">
                 Skills
               </h2>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1">
                 {data.skills.map((skill, index) => (
                   <span
                     key={index}
@@ -234,6 +259,60 @@ const ModernTemplate = ({ data, accentColor }) => {
             </section>
           )}
         </div>
+
+        {/* Certifications */}
+        {data.certification && data.certification.length > 0 && (
+          <section className="mb-1">
+            <h2 className="text-xl font-light mb-1 border-b border-gray-200">
+              Certifications
+            </h2>
+
+            <div className="space-y-1">
+              {data.certification.map((cert, index) => {
+                return (
+                  <div key={index} className="flex items-start">
+                    <div className="grow">
+                      <div className="flex justify-between items-start">
+                        <h3 className="text-gray-900 font-medium leading-tight">
+                          {cert.credential_url ? (
+                            <div className="flex items-center">
+                              {cert.certificate_name}
+
+                              <p className="text-sm text-gray-700 italic ml-1">
+                                {cert.issuer}
+                              </p>
+                              <a
+                                href={cert.credential_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                              >
+                                <ExternalLink
+                                  size={12}
+                                  className="ml-1 opacity-75 shrink-0"
+                                />
+                              </a>
+                            </div>
+                          ) : (
+                            cert.certificate_name
+                          )}
+                        </h3>
+                        <p className="text-sm text-gray-600 shrink-0 ml-4">
+                          {formatDate(cert.issue_date)}
+                        </p>
+                      </div>
+
+                      {cert.description && (
+                        <p className="text-gray-700 leading-relaxed text-sm">
+                          {cert.description}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

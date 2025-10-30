@@ -1,4 +1,13 @@
-import { Mail, Phone, MapPin, Linkedin, Globe, Github } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Linkedin,
+  Globe,
+  Github,
+  Award,
+  ExternalLink,
+} from "lucide-react";
 
 const MinimalImageTemplate = ({ data, accentColor }) => {
   const formatDate = (dateStr) => {
@@ -138,14 +147,14 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
 
           {/* Education */}
           {data.education && data.education.length > 0 && (
-            <section className="mb-4">
-              <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
+            <section className="mb-2">
+              <h2 className="text-sm font-semibold tracking-widest text-zinc-600">
                 EDUCATION
               </h2>
               <div className="space-y-2 text-sm">
                 {data.education.map((edu, index) => (
                   <div key={index}>
-                    <p className="font-semibold uppercase">
+                    <p className="font-semibold">
                       {edu.degree} {edu.field && `in ${edu.field}`}
                     </p>
                     <p className="text-zinc-600">{edu.institution}</p>
@@ -162,10 +171,10 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
           {/* Skills */}
           {data.skills && data.skills.length > 0 && (
             <section>
-              <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
+              <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-2">
                 SKILLS
               </h2>
-              <ul className="space-y-1 text-sm flex flex-wrap gap-1">
+              <ul className="text-sm flex flex-wrap gap-1">
                 {data.skills.map((skill, index) => (
                   <li className="marker:ml-0.5" key={index}>
                     • {skill}
@@ -187,7 +196,7 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
               >
                 SUMMARY
               </h2>
-              <p className="text-zinc-700 leading-relaxed">
+              <p className="text-zinc-700 leading-relaxed text-sm">
                 {data.professional_summary}
               </p>
             </section>
@@ -202,11 +211,11 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
               >
                 EXPERIENCE
               </h2>
-              <div className="space-y-2 mb-2">
+              <div className="space-y-2 mb-1">
                 {data.experience.map((exp, index) => (
                   <div key={index}>
                     <div className="flex justify-between items-center">
-                      <h3 className="font-semibold text-zinc-900">
+                      <h3 className="font-semibold text-zinc-900 text-sm">
                         {exp.position}
                       </h3>
                       <span className="text-xs text-zinc-500">
@@ -232,18 +241,33 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
 
           {/* Projects */}
           {data.project && data.project.length > 0 && (
-            <section>
+            <section className="mb-1">
               <h2
                 className="text-sm uppercase tracking-widest font-semibold"
                 style={{ color: accentColor }}
               >
                 PROJECTS
               </h2>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 {data.project.map((project, index) => (
                   <div key={index}>
-                    <h3 className="text-md font-medium text-zinc-800 mt-2">
+                    <h3 className="text-md text-zinc-800 text-sm font-semibold">
                       {project.name}
+                      {project.link && (
+                        <span className="text-gray-600 font-normal cursor-pointer">
+                          <a
+                            href={project.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center"
+                          >
+                            <ExternalLink
+                              size={12}
+                              className="ml-1 opacity-75"
+                            />
+                          </a>
+                        </span>
+                      )}
                     </h3>
                     <p className="text-sm" style={{ color: accentColor }}>
                       {project.type}
@@ -257,6 +281,68 @@ const MinimalImageTemplate = ({ data, accentColor }) => {
                     )}
                   </div>
                 ))}
+              </div>
+            </section>
+          )}
+          {/* Certification */}
+          {data.certification && data.certification.length > 0 && (
+            <section>
+              <h2
+                className="text-sm uppercase tracking-widest font-semibold"
+                style={{ color: accentColor }}
+              >
+                CERTIFICATIONS
+              </h2>
+
+              <div className="space-y-1">
+                {data.certification.map((cert, index) => {
+                  return (
+                    <div key={index} className="flex space-x-2">
+                      <Award
+                        size={16}
+                        className="mt-1 shrink-0"
+                        style={{ color: accentColor }}
+                      />
+                      <div className="grow">
+                        <div className="flex justify-between items-start text-sm">
+                          <h3 className="text-gray-900 leading-tight">
+                            {cert.credential_url ? (
+                              <div className="flex items-center">
+                                {cert.certificate_name}
+
+                                <p className="text-sm italic ml-1">
+                                  {cert.issuer}
+                                </p>
+
+                                <a
+                                  href={cert.credential_url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  <ExternalLink
+                                    size={12}
+                                    className="ml-1 opacity-75 shrink-0"
+                                  />
+                                </a>
+                              </div>
+                            ) : (
+                              cert.certificate_name
+                            )}
+                          </h3>
+                          <p className="text-gray-600 shrink-0 ml-4">
+                            {formatDate(cert.issue_date)}
+                          </p>
+                        </div>
+
+                        {cert.description && (
+                          <p className="text-gray-700 leading-relaxed text-sm">
+                            {cert.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </section>
           )}

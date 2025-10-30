@@ -14,6 +14,7 @@ import {
   Share2Icon,
   Sparkles,
   User,
+  Award,
 } from "lucide-react";
 import PersonalInfoForm from "../components/PersonalInfoForm";
 import ResumePreview from "../components/ResumePreview";
@@ -27,6 +28,7 @@ import SkillsForm from "../components/SkillsForm";
 import { useSelector } from "react-redux";
 import api from "../configs/api";
 import toast from "react-hot-toast";
+import CertificationForm from "../components/CertificationForm";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -55,6 +57,7 @@ const ResumeBuilder = () => {
     { id: "education", name: "Education", icon: GraduationCap },
     { id: "projects", name: "Projects", icon: FolderIcon },
     { id: "skills", name: "Skills", icon: Sparkles },
+    { id: "certification", name: "Certification", icon: Award },
   ];
 
   const activeSection = sections[activeSectionIndex];
@@ -287,6 +290,17 @@ const ResumeBuilder = () => {
                       setResumeData((prev) => ({
                         ...prev,
                         skills: data,
+                      }))
+                    }
+                  />
+                )}
+                {activeSection.id === "certification" && (
+                  <CertificationForm
+                    data={resumeData.certification}
+                    onChange={(data) =>
+                      setResumeData((prev) => ({
+                        ...prev,
+                        certification: data,
                       }))
                     }
                   />
