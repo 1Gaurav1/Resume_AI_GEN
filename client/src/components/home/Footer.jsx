@@ -52,9 +52,7 @@ const Footer = () => {
               <li>
                 <a href="/" className="hover:text-green-600 transition">
                   Careers
-                  <span className="text-xs text-white bg-green-600 rounded-md ml-2 px-2 py-1">
-                    We’re hiring!
-                  </span>
+                  
                 </a>
               </li>
               <li>
@@ -87,7 +85,7 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-4 mt-3">
             <a
-              href="https://adarsh-sugandhe.vercel.app"
+              href="#"
               target="_blank"
               rel="noreferrer"
             >
@@ -111,7 +109,7 @@ const Footer = () => {
               </svg>
             </a>
             <a
-              href="https://www.linkedin.com/in/adarsh-sugandhe"
+              href="https://www.linkedin.com/in/gaurav-singh-chouhan-9b0021286/"
               target="_blank"
               rel="noreferrer"
             >

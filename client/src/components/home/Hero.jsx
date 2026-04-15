@@ -7,17 +7,11 @@ const Hero = () => {
 
   const { user } = useSelector((state) => state.auth);
 
-  const logos = [
-    "https://saasly.prebuiltui.com/assets/companies-logo/instagram.svg",
-    "https://saasly.prebuiltui.com/assets/companies-logo/framer.svg",
-    "https://saasly.prebuiltui.com/assets/companies-logo/microsoft.svg",
-    "https://saasly.prebuiltui.com/assets/companies-logo/huawei.svg",
-    "https://saasly.prebuiltui.com/assets/companies-logo/walmart.svg",
-  ];
+
 
   return (
     <>
-      <div className="min-h-screen pb-20">
+      <div className="min-h-screen pb-10">
         {/* Navbar */}
         <nav className="z-50 flex items-center justify-between w-full py-4 px-6 md:px-16 lg:px-24 xl:px-40 text-sm">
           <a href="https://prebuiltui.com">
@@ -227,22 +221,20 @@ const Hero = () => {
             </button>
           </div>
 
-          <p className="py-6 text-slate-600 mt-14">
-            Trusting by leading brands, including
-          </p>
-
-          <div
-            className="flex flex-wrap justify-between max-sm:justify-center gap-6 max-w-3xl w-full mx-auto py-4"
-            id="logo-container"
-          >
-            {logos.map((logo, index) => (
-              <img
-                key={index}
-                src={logo}
-                alt="logo"
-                className="h-6 w-auto max-w-xs"
-              />
-            ))}
+          {/* Stats Section */}
+          <div className="flex flex-wrap justify-center gap-10 md:gap-20 mt-16 pt-8 border-t border-slate-200 w-full max-w-4xl text-center opacity-80">
+            <div className="flex flex-col items-center">
+              <h3 className="text-3xl md:text-4xl font-bold text-green-600">50+</h3>
+              <p className="text-slate-600 mt-1 font-medium text-sm md:text-base">ATS Templates</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <h3 className="text-3xl md:text-4xl font-bold text-green-600">98%</h3>
+              <p className="text-slate-600 mt-1 font-medium text-sm md:text-base">Interview Rate</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <h3 className="text-3xl md:text-4xl font-bold text-green-600">24/7</h3>
+              <p className="text-slate-600 mt-1 font-medium text-sm md:text-base">AI Assistance</p>
+            </div>
           </div>
         </div>
       </div>

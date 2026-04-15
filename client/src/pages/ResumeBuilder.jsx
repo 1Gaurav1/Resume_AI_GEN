@@ -15,6 +15,7 @@ import {
   Sparkles,
   User,
   Award,
+  BarChart3,
 } from "lucide-react";
 import PersonalInfoForm from "../components/PersonalInfoForm";
 import ResumePreview from "../components/ResumePreview";
@@ -29,6 +30,11 @@ import { useSelector } from "react-redux";
 import api from "../configs/api";
 import toast from "react-hot-toast";
 import CertificationForm from "../components/CertificationForm";
+import ATSScoreDashboard from "../components/ATSScoreDashboard";
+import JobDescriptionInput from "../components/JobDescriptionInput";
+import ResumeMatchAnalysis from "../components/ResumeMatchAnalysis";
+import ResumeAISuggestions from "../components/ResumeAISuggestions";
+import OptimizeResumeButton from "../components/OptimizeResumeButton";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -49,6 +55,8 @@ const ResumeBuilder = () => {
   });
   const [activeSectionIndex, setactiveSectionIndex] = useState(0);
   const [removeBackground, setRemoveBackground] = useState(false);
+  const [activeTab, setActiveTab] = useState("builder"); // 'builder' | 'analysis'
+  const [jobAnalysis, setJobAnalysis] = useState(null); // { jobDescription, skills, keywords, tools }
 
   const sections = [
     { id: "personal", name: "personal Info", icon: User },
@@ -146,19 +154,46 @@ const ResumeBuilder = () => {
 
   return (
     <div>
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
         <Link
           to="/app"
           className="inline-flex gap-2 items-center text-slate-500 hover:text-slate-700 transition-all"
         >
           <ArrowLeftIcon className="size-4" /> Back to Dashboard
         </Link>
+        {/* Tab Switcher */}
+        <div className="flex bg-slate-100 rounded-lg p-1 gap-1">
+          <button
+            onClick={() => setActiveTab("builder")}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              activeTab === "builder"
+                ? "bg-white text-slate-800 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            <FileText className="size-4" /> Builder
+          </button>
+          <button
+            onClick={() => setActiveTab("analysis")}
+            className={`flex items-center gap-1.5 px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
+              activeTab === "analysis"
+                ? "bg-white text-slate-800 shadow-sm"
+                : "text-slate-500 hover:text-slate-700"
+            }`}
+          >
+            <BarChart3 className="size-4" />
+            <span>Analysis</span>
+            <span className="text-xs bg-indigo-500 text-white rounded-full px-1.5 py-0.5 leading-none ml-0.5">AI</span>
+          </button>
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 pb-8">
         <div className="grid lg:grid-cols-12 gap-8">
-          {/* Left Panel - Form */}
+          {/* Left Panel - Form or Analysis */}
           <div className="relative lg:col-span-5 rounded-lg overflow-hidden">
+            {/* ── BUILDER TAB ── */}
+            {activeTab === "builder" && (
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 pt-1">
               {/* Progress bar using activeSectionIndex */}
 
@@ -316,12 +351,41 @@ const ResumeBuilder = () => {
                 Save Changes
               </button>
             </div>
+            )}
+
+            {/* ── ANALYSIS TAB ── */}
+            {activeTab === "analysis" && (
+              <div className="space-y-5">
+                <ATSScoreDashboard resumeData={resumeData} />
+                <JobDescriptionInput
+                  onAnalyze={(result) => setJobAnalysis(result)}
+                />
+                <ResumeMatchAnalysis
+                  resumeData={resumeData}
+                  jobDescription={jobAnalysis?.jobDescription || null}
+                />
+                <ResumeAISuggestions resumeData={resumeData} />
+                <OptimizeResumeButton
+                  resumeData={resumeData}
+                  jobDescription={jobAnalysis?.jobDescription || null}
+                  onOptimized={(optimized) => {
+                    setResumeData((prev) => ({ ...prev, ...optimized }));
+                    toast.success("Resume optimized! Remember to save your changes.");
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Right Panel - Preview */}
           <div className="lg:col-span-7 max-lg:mt-6">
             <div className="relative w-full">
-              <div className="absolute bottom-3 left-0 right-0 flex items-center justify-end gap-2">
+              <ResumePreview
+                data={resumeData}
+                template={resumeData.template}
+                accentColor={resumeData.accent_color}
+              />
+              <div className="absolute bottom-3 left-0 right-0 flex items-center justify-end gap-2 px-3">
                 {resumeData.public && (
                   <button
                     onClick={handleShare}
@@ -351,12 +415,6 @@ const ResumeBuilder = () => {
                 </button>
               </div>
             </div>
-
-            <ResumePreview
-              data={resumeData}
-              template={resumeData.template}
-              accentColor={resumeData.accent_color}
-            />
           </div>
         </div>
       </div>
