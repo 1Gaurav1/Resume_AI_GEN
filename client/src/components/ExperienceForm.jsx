@@ -38,12 +38,12 @@ const ExperienceForm = ({ data, onChange }) => {
 
     try {
       const { data } = await api.post(
-        "/api/ai/enhance-job-desc",
-        { userContent: prompt },
+        "/api/ai/smart-bullet",
+        { bulletPoint: experience.description },
         { headers: { Authorization: token } }
       );
 
-      updateExperience(index, "description", data.enhancedContent);
+      updateExperience(index, "description", data.rewritten);
     } catch (error) {
       toast.error(error.message);
     } finally {

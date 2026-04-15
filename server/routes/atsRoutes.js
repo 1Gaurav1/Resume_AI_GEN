@@ -5,6 +5,7 @@ import {
   analyzeJobDescription,
   resumeMatch,
   optimizeResume,
+  semanticMatch,
 } from "../controllers/atsController.js";
 
 const atsRouter = express.Router();
@@ -12,6 +13,7 @@ const atsRouter = express.Router();
 atsRouter.post("/analyze-resume", protect, analyzeResume);
 atsRouter.post("/analyze-job-description", protect, analyzeJobDescription);
 atsRouter.post("/resume-match", protect, resumeMatch);
+atsRouter.post("/semantic-match", protect, semanticMatch);
 atsRouter.post("/optimize-resume", protect, optimizeResume);
 
 export default atsRouter;

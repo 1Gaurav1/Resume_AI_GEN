@@ -35,6 +35,10 @@ import JobDescriptionInput from "../components/JobDescriptionInput";
 import ResumeMatchAnalysis from "../components/ResumeMatchAnalysis";
 import ResumeAISuggestions from "../components/ResumeAISuggestions";
 import OptimizeResumeButton from "../components/OptimizeResumeButton";
+import ScoreHistoryGraph from "../components/Dashboard/ScoreHistoryGraph";
+import CoverLetterDisplay from "../components/AI/CoverLetterDisplay";
+import InterviewPrepModule from "../components/AI/InterviewPrepModule";
+import ShareModal from "../components/Collaboration/ShareModal";
 
 const ResumeBuilder = () => {
   const { resumeId } = useParams();
@@ -57,6 +61,7 @@ const ResumeBuilder = () => {
   const [removeBackground, setRemoveBackground] = useState(false);
   const [activeTab, setActiveTab] = useState("builder"); // 'builder' | 'analysis'
   const [jobAnalysis, setJobAnalysis] = useState(null); // { jobDescription, skills, keywords, tools }
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const sections = [
     { id: "personal", name: "personal Info", icon: User },
@@ -107,18 +112,29 @@ const ResumeBuilder = () => {
   };
 
   const handleShare = () => {
-    const frontendUrl = window.location.href.split("/app/")[0];
-    const resumeUrl = frontendUrl + "/view/" + resumeId;
-
-    if (navigator.share) {
-      navigator.share({ url: resumeUrl, text: "My Resume" });
-    } else {
-      alert("Share not supported on this borwser.");
-    }
+    setShowShareModal(true);
   };
 
   const downloadResume = () => {
     window.print();
+  };
+
+  const downloadDocx = async () => {
+    try {
+      const response = await api.get(`/api/export/docx/${resumeId}`, {
+        headers: { Authorization: token },
+        responseType: 'blob',
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${resumeData.title || 'Resume'}.docx`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (err) {
+      toast.error("Failed to export DOCX");
+    }
   };
 
   const saveResume = async () => {
@@ -357,6 +373,7 @@ const ResumeBuilder = () => {
             {activeTab === "analysis" && (
               <div className="space-y-5">
                 <ATSScoreDashboard resumeData={resumeData} />
+                <ScoreHistoryGraph history={resumeData.score_history} />
                 <JobDescriptionInput
                   onAnalyze={(result) => setJobAnalysis(result)}
                 />
@@ -373,6 +390,15 @@ const ResumeBuilder = () => {
                     toast.success("Resume optimized! Remember to save your changes.");
                   }}
                 />
+                {jobAnalysis?.jobDescription && (
+                  <>
+                    <CoverLetterDisplay resumeData={resumeData} />
+                    <InterviewPrepModule 
+                      jobDescription={jobAnalysis.jobDescription} 
+                      missingSkills={resumeData.skills} // Basic missing skills fallback
+                    />
+                  </>
+                )}
               </div>
             )}
           </div>
@@ -408,16 +434,30 @@ const ResumeBuilder = () => {
                 </button>
 
                 <button
+                  onClick={downloadDocx}
+                  className="flex items-center p-2 px-6 gap-2 text-xs bg-linear-to-br from-blue-100 to-blue-200 text-blue-600 ring-blue-300 rounded-lg hover:ring transition-colors"
+                >
+                  <DownloadIcon className="size-4" /> DOCX
+                </button>
+                <button
                   onClick={downloadResume}
                   className="flex items-center p-2 px-6 gap-2 text-xs bg-linear-to-br from-green-100 to-green-200 text-green-600 ring-green-300 rounded-lg hover:ring transition-colors"
                 >
-                  <DownloadIcon className="size-4" /> Download
+                  <DownloadIcon className="size-4" /> PDF
                 </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+      {showShareModal && (
+        <ShareModal 
+          resumeId={resumeId} 
+          isPublic={resumeData.public} 
+          onClose={() => setShowShareModal(false)}
+          onUpdate={(pub) => setResumeData(prev => ({ ...prev, public: pub }))}
+        />
+      )}
     </div>
   );
 };

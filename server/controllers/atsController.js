@@ -167,32 +167,29 @@ export const analyzeJobDescription = async (req, res) => {
     const { jobDescription } = req.body;
     if (!jobDescription) return res.status(400).json({ message: "Missing jobDescription" });
 
-    const text = jobDescription.toLowerCase();
-    const tokens = extractKeywordsFromText(text);
+    const prompt = `You are an ATS extraction bot. Extract the top 30 to 50 keywords from this job description. Group them into 'skills', 'tools', 'responsibilities' and 'keywords' (general tokens).
+    
+Job Description:
+${jobDescription}
 
-    // Skills: tokens that match known tech keywords
-    const skills = TECH_KEYWORDS.filter((kw) => text.includes(kw));
+Return exactly valid JSON with this structure, no markdown:
+{
+  "skills": ["..."],
+  "tools": ["..."],
+  "responsibilities": ["..."],
+  "keywords": ["..."]
+}`;
+    
+    // Default model if process.env.GEMINI_MODEL isn't set
+    const model = ai.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json" }
+    });
+    
+    const response = await model.generateContent(prompt);
+    const parsed = JSON.parse(response.response.text());
 
-    // Tools: multi-word or version-specific tool names
-    const toolPatterns = [
-      "react","angular","vue","next.js","node.js","docker","kubernetes","aws","azure","gcp",
-      "mongodb","postgresql","mysql","redis","elasticsearch","tensorflow","pytorch",
-      "git","jenkins","github","gitlab","jira","figma","slack","postman","webpack","vite",
-    ];
-    const tools = toolPatterns.filter((t) => text.includes(t));
-
-    // Responsibilities: sentences containing action verbs
-    const sentences = jobDescription.split(/[.;\n]+/).map((s) => s.trim()).filter(Boolean);
-    const responsibilities = sentences
-      .filter((s) =>
-        ACTION_VERBS.some((v) => s.toLowerCase().includes(v))
-      )
-      .slice(0, 8);
-
-    // Keywords: meaningful tokens not in stop words
-    const keywords = [...new Set(tokens.filter((t) => !STOP_WORDS.has(t.split(" ")[0]) && t.length > 3))].slice(0, 30);
-
-    return res.status(200).json({ skills, keywords, tools, responsibilities });
+    return res.status(200).json(parsed);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -286,6 +283,67 @@ Return the optimized resume as valid JSON with the same structure.`;
 
     const optimizedResume = JSON.parse(response.response.text());
     return res.status(200).json({ optimizedResume });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// POST /api/ats/semantic-match
+export const semanticMatch = async (req, res) => {
+  try {
+    const { resumeData, jobDescription } = req.body;
+    if (!resumeData || !jobDescription)
+      return res.status(400).json({ message: "Missing resumeData or jobDescription" });
+
+    const resumeText = extractResumeText(resumeData);
+    
+    // Calculate Cosine Similarity with Gemini text-embedding-004
+    const embeddingModel = ai.getGenerativeModel({ model: "text-embedding-004" });
+    
+    const [resumeEmbRes, jdEmbRes] = await Promise.all([
+      embeddingModel.embedContent(resumeText),
+      embeddingModel.embedContent(jobDescription)
+    ]);
+    
+    const vec1 = resumeEmbRes.embedding.values;
+    const vec2 = jdEmbRes.embedding.values;
+    
+    let dotProduct = 0;
+    let normA = 0;
+    let normB = 0;
+    for (let i = 0; i < vec1.length; i++) {
+        dotProduct += vec1[i] * vec2[i];
+        normA += vec1[i] * vec1[i];
+        normB += vec2[i] * vec2[i];
+    }
+    const similarityScore = Math.max(0, Math.min(100, Math.round((dotProduct / (Math.sqrt(normA) * Math.sqrt(normB))) * 100)));
+
+    const prompt = `You are a strict ATS matcher. Given this job description and this resume text, identify EXACT matched concepts and missing concepts. Be precise.
+    
+Job: ${jobDescription}
+Resume: ${resumeText}
+
+Return exactly valid JSON:
+{
+  "matchedConcepts": ["..."],
+  "missingConcepts": ["..."]
+}`;
+
+    const matchModel = ai.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json" }
+    });
+    const matchResponse = await matchModel.generateContent(prompt);
+    let conceptualData = { matchedConcepts: [], missingConcepts: [] };
+    try {
+        conceptualData = JSON.parse(matchResponse.response.text());
+    } catch(e) { }
+
+    return res.status(200).json({
+      similarityScore,
+      matchedConcepts: conceptualData.matchedConcepts || [],
+      missingConcepts: conceptualData.missingConcepts || []
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

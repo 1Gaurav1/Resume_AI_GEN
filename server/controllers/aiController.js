@@ -123,3 +123,82 @@ export const uploadResume = async (req, res) => {
     return res.status(400).json({ message: error.message });
   }
 };
+
+// POST: /api/ai/cover-letter
+export const generateCoverLetter = async (req, res) => {
+  try {
+    const { resumeData, jobDescription } = req.body;
+    if (!resumeData || !jobDescription) return res.status(400).json({ message: "Missing required fields" });
+
+    const prompt = `You are an expert career bot. Generate 3 distinct versions of a cover letter (Formal, Friendly, Confident) using the following Resume JSON and Job Description.
+    
+Job Description:
+${jobDescription}
+
+Resume Data:
+${JSON.stringify(resumeData)}
+
+Return exactly valid JSON with this structure, no markdown wrappers: 
+{ "formal": "...", "friendly": "...", "confident": "..." }`;
+
+    const model = ai.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json" }
+    });
+    const response = await model.generateContent(prompt);
+    
+    return res.status(200).json(JSON.parse(response.response.text()));
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// POST: /api/ai/interview-questions
+export const generateInterviewQuestions = async (req, res) => {
+  try {
+    const { missingSkills, jobDescription } = req.body;
+    if (!jobDescription) return res.status(400).json({ message: "Missing required fields" });
+
+    const prompt = `You are a strict technical hiring manager. Based on this job description and the candidate's missing skills, generate 5-10 interview questions split into 'technical' and 'behavioral'.
+
+Missing Skills: ${missingSkills?.join(", ") || "None"}
+Job Description: ${jobDescription}
+
+Return exactly valid JSON with this structure, no markdown wrappers:
+{
+  "technical": [{ "question": "...", "context": "..." }],
+  "behavioral": [{ "question": "...", "context": "..." }]
+}`;
+
+    const model = ai.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+      generationConfig: { responseMimeType: "application/json" }
+    });
+    const response = await model.generateContent(prompt);
+    
+    return res.status(200).json(JSON.parse(response.response.text()));
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// POST: /api/ai/smart-bullet
+export const generateSmartBullet = async (req, res) => {
+  try {
+    const { bulletPoint } = req.body;
+    if (!bulletPoint) return res.status(400).json({ message: "Missing required fields" });
+
+    const prompt = `Rewrite this weak resume bullet point into a strong, ATS-optimized one. Use an action verb and implying measurable impact if possible. Return only the rewritten text without quotes.
+    
+Original: ${bulletPoint}`;
+
+    const model = ai.getGenerativeModel({
+      model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+    });
+    const response = await model.generateContent(prompt);
+    
+    return res.status(200).json({ rewritten: response.response.text().trim() });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};

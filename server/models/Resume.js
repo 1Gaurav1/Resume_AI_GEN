@@ -56,6 +56,19 @@ const ResumeSchema = new mongoose.Schema(
         credential_url: { type: String },
       },
     ],
+    score_history: [
+      {
+        score: { type: Number },
+        date: { type: Date, default: Date.now },
+        jobTarget: { type: String, default: 'General' }
+      }
+    ],
+    collaborators: [
+      {
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        role: { type: String, enum: ['viewer', 'editor'], default: 'viewer' }
+      }
+    ]
   },
   { timestamps: true, minimize: false }
 );
