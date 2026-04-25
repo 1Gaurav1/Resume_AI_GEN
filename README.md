@@ -3,9 +3,6 @@
 **AI-powered resume builder built with React, Vite & Express**  
 Create, customise and download professional-looking CVs in just a few minutes.
 
-## 🚀 Live Demo  
-[Visit the app](https://ai-resume-builder-iota-one.vercel.app)
-
 ## 🧰 Tech Stack  
 - **Frontend:** React, Vite, TailwindCSS  
 - **Backend:** Node.js, Express  
