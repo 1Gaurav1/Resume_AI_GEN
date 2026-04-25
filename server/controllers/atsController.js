@@ -1,4 +1,5 @@
 import ai from "../configs/ai.js";
+import Resume from "../models/Resume.js";
 
 // ─── Common keyword / action verb banks ──────────────────────────────────────
 
@@ -83,7 +84,7 @@ const extractKeywordsFromText = (text) => {
 // POST /api/ats/analyze-resume
 export const analyzeResume = async (req, res) => {
   try {
-    const { resumeData } = req.body;
+    const { resumeData, resumeId } = req.body;
     if (!resumeData) return res.status(400).json({ message: "Missing resumeData" });
 
     const resumeText = extractResumeText(resumeData);
@@ -130,6 +131,24 @@ export const analyzeResume = async (req, res) => {
     if (pi.image) formattingScore += 2;
 
     const totalScore = keywordScore + structureScore + contentScore + readabilityScore + formattingScore;
+
+    // Save score to history if resumeId provided
+    if (resumeId) {
+      try {
+        await Resume.findByIdAndUpdate(resumeId, {
+          $push: {
+            score_history: {
+              score: totalScore,
+              date: new Date(),
+              jobTarget: "General",
+            },
+          },
+        });
+      } catch (e) {
+        // non-fatal: don't block the response if save fails
+        console.error("score_history save failed:", e.message);
+      }
+    }
 
     const suggestions = [];
     if (!hasSummary) suggestions.push("Add a professional summary to improve recruiter first impression.");

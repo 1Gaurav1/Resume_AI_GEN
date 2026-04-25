@@ -60,7 +60,7 @@ const BreakdownBar = ({ label, value, max, color }) => (
   </div>
 );
 
-const ATSScoreDashboard = ({ resumeData }) => {
+const ATSScoreDashboard = ({ resumeData, onScoreSaved }) => {
   const { token } = useSelector((state) => state.auth);
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -73,10 +73,18 @@ const ATSScoreDashboard = ({ resumeData }) => {
     try {
       const { data } = await api.post(
         "/api/ats/analyze-resume",
-        { resumeData },
+        { resumeData, resumeId: resumeData?._id },
         { headers: { Authorization: token } }
       );
       setResult(data);
+      // Notify parent so score_history updates in local state
+      if (onScoreSaved && resumeData?._id) {
+        onScoreSaved({
+          score: data.score,
+          date: new Date().toISOString(),
+          jobTarget: "General",
+        });
+      }
     } catch (err) {
       setError(err?.response?.data?.message || err.message);
     }

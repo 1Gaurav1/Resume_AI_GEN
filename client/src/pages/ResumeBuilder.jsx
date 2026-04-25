@@ -372,7 +372,15 @@ const ResumeBuilder = () => {
             {/* ── ANALYSIS TAB ── */}
             {activeTab === "analysis" && (
               <div className="space-y-5">
-                <ATSScoreDashboard resumeData={resumeData} />
+                <ATSScoreDashboard
+                  resumeData={resumeData}
+                  onScoreSaved={(entry) =>
+                    setResumeData((prev) => ({
+                      ...prev,
+                      score_history: [...(prev.score_history || []), entry],
+                    }))
+                  }
+                />
                 <ScoreHistoryGraph history={resumeData.score_history} />
                 <JobDescriptionInput
                   onAnalyze={(result) => setJobAnalysis(result)}
